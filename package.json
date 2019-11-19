@@ -28,6 +28,7 @@
     "express": "^4.17.1",
     "mongoose": "^5.7.5",
     "morgan": "^1.9.1",
+    "node-redis-pubsub": "^4.0.0",
     "nodemon": "^1.19.1",
     "redis": "^2.8.0",
     "winston": "^3.2.1"

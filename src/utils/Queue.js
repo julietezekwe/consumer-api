@@ -1,5 +1,5 @@
 import Queue from 'bull';
-
+import NRP from 'node-redis-pubsub';
 
 const name = 'newMessage';
 
@@ -20,12 +20,18 @@ class Bull {
     this.queue = new Queue(name, {
       redis: config.redis,
     });
+    this.pubsub = NRP({ ...config.redis, scope: 'controller' });
   }
 
   /**
    * @returns {void}
    */
   async listen() {
+    this.pubsub.on('message', async (data) => {
+      this.logger.info('pubsub working');
+      await this.queue.add(data);
+    });
+
     this.queue.on('completed', async (job) => {
       await job.remove();
       return this.logger.info('Job is completed');
@@ -52,6 +58,7 @@ class Bull {
    */
   stop() {
     this.queue.close();
+    this.pubsub.quit();
   }
 }
 
