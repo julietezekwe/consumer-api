@@ -11,8 +11,11 @@ class Bull {
   /**
    * constructor
    */
-  constructor({ config, logger, messageRepository }) {
+  constructor({
+    config, logger, messageRepository, redis,
+  }) {
     this.logger = logger;
+    this.redis = redis;
     this.messageRepository = messageRepository;
     this.queue = new Queue(name, {
       redis: config.redis,
@@ -36,6 +39,7 @@ class Bull {
     this.queue.process(async (job, done) => {
       try {
         await this.messageRepository.create(job.data);
+        await this.redis.setObject('id', job.data.task_id, job.data, 86400);
         done(null);
       } catch (error) {
         done(error.message);

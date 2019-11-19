@@ -15,5 +15,9 @@ const messageSchema = new BaseSchema({
     type: String,
     required: true,
   },
+  customer_id: {
+    type: String,
+    required: true,
+  },
 });
 export default messageSchema;
